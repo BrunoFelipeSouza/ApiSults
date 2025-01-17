@@ -4,7 +4,9 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/get_all_chamados', methods=['GET'])
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+@app.route('/chamados', methods=['GET'])
 def get_all_chamados():
     token = request.args.get('token')
     inicio = request.args.get('inicio')
@@ -31,15 +33,20 @@ def get_all_chamados():
             response = requests.get(url, headers=request_obj.getHeaders())
 
             if response.status_code != 200:
+                print(response.status_code)
                 return jsonify({"error": f"Erro na requisição: {response.status_code}"}), 500
             
             data = response.json()
+
+            if 'data' not in data:
+                return jsonify({"error": "Formato inesperado da resposta da API"}), 500
+
             all_data.extend(data['data'])
 
-            if data['start'] + data['limit'] >= data['totalPage'] * data['limit']:
+            if data['start'] >= data['totalPage']:
                 break
 
-            params.start = data['start'] + data['limit']
+            params.start = data['start'] + 1
             request_obj = ChamadosRequest(token, params)
             url = request_obj.buildUrl()
 
