@@ -33,7 +33,6 @@ def get_all_chamados():
             response = requests.get(url, headers=request_obj.getHeaders())
 
             if response.status_code != 200:
-                print(response.status_code)
                 return jsonify({"error": f"Erro na requisição: {response.status_code}"}), 500
             
             data = response.json()
