@@ -177,6 +177,25 @@ def getChamados():
 
     return jsonify(data), 200
 
+@app.route("/chamados", methods=["PATCH"])
+def updateChamados():
+    if not hasData:
+        return jsonify({"error": "Os dados ainda nao foram carregados"}), 422
+    
+    configs = getConfigs()
+    token = configs["token"]
+    autoRefresh = configs["autoRefresh"]
+
+    if not token:
+        return jsonify({"error": "Token nao configurado"}), 400
+    
+    if autoRefresh:
+        return jsonify({"error": "Atualizacao automatica ativada"}), 400
+
+    refreshData()
+
+    return jsonify(), 204
+
 def backgroundJob():
     while True:
         autoRefreshData()
