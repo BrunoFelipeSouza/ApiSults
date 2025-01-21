@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 import requests
 import time
 import threading
@@ -11,6 +12,7 @@ app = Flask(__name__)
 configsFile = "configs.json"
 dataFile = "data.json"
 hasData = False
+updatingData = False
 
 def getConfigs():
     try:
@@ -37,10 +39,20 @@ def getData():
         return []
     
 def setData(data):
-    with open(dataFile, "w", encoding="utf-8") as file:
-        json.dump(data, file, ensure_ascii=False, indent = 4)
+    tempFile = f"{dataFile}.tmp"
+    try:
+        with open(tempFile, "w", encoding="utf-8") as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
+        os.replace(tempFile, dataFile)
+    except Exception as e:
+        if os.path.exists(tempFile):
+            os.remove(tempFile)
+        print(f"Erro ao gravar dados: {e}")
     
 def updateData(newData):
+    print("Updating data...")
+    global updatingData
+    updatingData = True
     data = getData()
     for newTicket in newData:
         ticket = next((ticket for ticket in data if ticket['id'] == newTicket['id']), None)
@@ -49,6 +61,7 @@ def updateData(newData):
         else:
             data.append(newTicket)
     setData(data)
+    updatingData = False
     
 def refreshData():
     print("Refreshing data...")
@@ -153,6 +166,9 @@ def setConfigurations():
 
 @app.route("/chamados", methods=["GET"])
 def getChamados():
+    while updatingData:
+        time.sleep(1)
+
     if not hasData:
         return jsonify({"error": "Os dados ainda nao foram carregados"}), 422
 
@@ -164,16 +180,16 @@ def getChamados():
     if departamento is not None:
         try:
             departamento = int(departamento)
+            data = [ticket for ticket in data if ticket['departamento']['id'] == departamento]
         except:
             return jsonify({"error": "Departamento deve ser um inteiro"}), 400
-        data = [ticket for ticket in data if ticket['departamento']['id'] == departamento]
 
     if departamentos is not None:
         try:
             departamentos = [int(x) for x in departamentos.split(',')]
+            data = [ticket for ticket in data if ticket['departamento']['id'] in departamentos]
         except:
             return jsonify({"error": "Departamentos devem ser uma lista de inteiros"}), 400
-        data = [ticket for ticket in data if ticket['departamento']['id'] in departamentos]
 
     return jsonify(data), 200
 
