@@ -21,12 +21,14 @@
     "assets": [
       "configs.json",
       "data.json",
-      "pages/**/*.html",
+      "src/pages/**/*.html",
       "src/enums/**/*.js", 
       "src/models/**/*.js"
     ],
     "targets": [
-      "latest-win-x64"
+      "latest-win-x64",
+      "latest-linux-x64",
+      "latest-macos-x64"
     ]
   }
 }

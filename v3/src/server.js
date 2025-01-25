@@ -5,6 +5,7 @@ const {
   ChamadosRequest,
 } = require("./models/requests/chamados.request");
 const nodeCron = require("node-cron");
+const Home = require("./models/pages/home");
 
 const app = express();
 const port = 80;
@@ -161,14 +162,7 @@ async function autoRefreshDataAsync() {
 }
 
 app.get("/", (req, res) => {
-  fs.readFile("./pages/home/home.html", "utf-8", (err, data) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Erro ao ler o arquivo HTML");
-    } else {
-      return res.send(data);
-    }
-  });
+  return res.status(200).send(Home.render());
 });
 
 app.get("/configs", (_, res) => {
