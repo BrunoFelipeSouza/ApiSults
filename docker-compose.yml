@@ -1,0 +1,41 @@
+﻿version: "3.4"
+
+services:
+  api:
+    image: api
+    build:
+      context: /v4/ApiSults
+      dockerfile: ApiSults.Presentation.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - TZ=America/Sao_Paulo
+    depends_on:
+      - sqlserver
+    ports:
+      - "80:8080"
+      - "81:8081"
+    networks:
+      - app_network
+    restart: always
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=ApiSults#123
+      - MSSQL_PID=Express
+      - TZ=America/Sao_Paulo
+    ports:
+      - "1433:1433"
+    networks:
+      - app_network
+    restart: always
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  sqlserver_data:
