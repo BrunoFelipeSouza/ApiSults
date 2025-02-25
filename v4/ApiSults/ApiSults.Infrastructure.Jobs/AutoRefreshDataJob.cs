@@ -36,6 +36,7 @@ public class AutoRefreshDataJob(IServiceScopeFactory serviceScopeFactory) : IHos
 
     private async Task DoWork(CancellationToken cancellationToken)
     {
+        return;
         await _semaphore.WaitAsync(cancellationToken);
 
         try
