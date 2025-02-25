@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>0ba2d1f5-b7ed-4f23-9e27-c81cb1a854ae</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="docker-compose-development.yml" />
+    <None Remove="docker-compose.yml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApiSults.Application\ApiSults.Application.csproj" />
+    <ProjectReference Include="..\ApiSults.Infrastructure.Data\ApiSults.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\ApiSults.Infrastructure.Jobs\ApiSults.Infrastructure.Jobs.csproj" />
+    <ProjectReference Include="..\ApiSults.Infrastructure.Services\ApiSults.Infrastructure.Services.csproj" />
+  </ItemGroup>
+
+</Project>
