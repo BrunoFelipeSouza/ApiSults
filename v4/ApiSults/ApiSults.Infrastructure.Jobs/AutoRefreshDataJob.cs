@@ -17,7 +17,7 @@ public class AutoRefreshDataJob(IServiceScopeFactory serviceScopeFactory) : IHos
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _timer = new Timer(_ => Task.Run(() => DoWork(cancellationToken)), null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+        _timer = new Timer(_ => Task.Run(() => DoWork(cancellationToken)), null, TimeSpan.Zero, TimeSpan.FromMinutes(15));
         return Task.CompletedTask;
     }
 
